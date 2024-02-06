@@ -12,10 +12,7 @@ export default function ToDay({currentdata ,today, getwork, setGetwork, getPromi
     const [work, setWork] = useState(getwork.flat());
     const [promiss, setPromiss] = useState(getPromiss.flat());
 
-
-    // 민성이 클릭 날짜 받기
     const clickDay = format(today, "dd");
-    // 진우가 수정한 const
     const [showToday, setShowToday] = useState(false);
     const [diaryContent, setDiaryContent] = useState("");
 
@@ -26,6 +23,19 @@ export default function ToDay({currentdata ,today, getwork, setGetwork, getPromi
             setShowToday(false);
         }
     }, [clickDay, currentdata]);
+    const addToLocalStorage = (key, value) => {
+        const existData = localStorage.getItem(key);
+        const newData = existData ? JSON.parse(existData) : [];
+
+        let pushArray=[]
+        for (let i = 0; i < newData.length; i++) {
+            if (newData[i][0].ClickDay !== value[0].ClickDay) {
+                pushArray.push(newData[i]);
+            }
+        }
+        pushArray.push(value);
+        localStorage.setItem(key, JSON.stringify(pushArray));
+    }
 
     const onSaveDiary = (content) => {
         const diaryData = {
@@ -44,23 +54,7 @@ export default function ToDay({currentdata ,today, getwork, setGetwork, getPromi
 
         localStorage.setItem("Diary", JSON.stringify(existingDiary));
     };
-
     // localStorage에 데이터 추가하는 함수
-    const addToLocalStorage = (key, value) => {
-        const existData = localStorage.getItem(key);
-        const newData = existData ? JSON.parse(existData) : [];
-
-        let pushArray=[]
-        for (let i = 0; i < newData.length; i++) {
-            if (newData[i][0].ClickDay !== value[0].ClickDay) {
-                pushArray.push(newData[i]);
-            }
-        }
-        pushArray.push(value);
-        localStorage.setItem(key, JSON.stringify(pushArray));
-        // newData.push(value);
-        // localStorage.setItem(key, JSON.stringify(newData));
-    }
     return(
         <div className="MainArea">
             <h1 style={{paddingLeft: "10px"}}>{format(today, "yyyy-MM-dd")}일</h1>
@@ -145,12 +139,10 @@ const TodayComponent=({todos, setTodos, ClickDay, local, setGetwork})=>{
             </div>
         )
     }
-
-    console.log(todos.flat());
     const localName = "TodayList";
     return (
         <div>
-            <TodayInput todos={todos} setTodos={setTodos} ClickDay={ClickDay}/>
+            <TodayInput todos={todos} setTodos={setTodos}$ ClickDay={ClickDay}/>
             <TodayList todos={todos} setTodos={setTodos} ClickDay={ClickDay}/>
             <br/>
             <Button variant="success" className="firstButton" type={"button"} onClick={()=> {
